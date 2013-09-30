@@ -1,0 +1,10 @@
+**/target
+*/.idea*
+*/.settings
+*/.classpath
+*/.history
+*/.project
+*/lib_managed
+*/submission
+
+
