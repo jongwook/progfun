@@ -1,6 +1,7 @@
 package patmat
 
 import common._
+import scala.annotation.tailrec
 
 /**
  * Assignment 4: Huffman coding
@@ -77,10 +78,11 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-  def times(chars: List[Char]): List[(Char, Int)] = {
+  @tailrec def times(chars: List[Char]): List[(Char, Int)] = {
     def add(accum: List[(Char, Int)], char: Char): List[(Char, Int)] = accum match {
+      case Nil => (char, 1) :: Nil
       case (`char`, weight) :: tail => (char, weight + 1) :: tail
-      case _ => accum
+      case head :: tail => head :: add(tail, char)
     }
     chars match {
       case Nil => Nil
@@ -155,8 +157,11 @@ object Huffman {
    *    the example invocation. Also define the return type of the `until` function.
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
-  def until[C <: CodeTree](singleton: List[CodeTree] => Boolean, combine: List[CodeTree] => List[CodeTree])(trees: List[C]): List[CodeTree]
-    = if (singleton(trees)) trees else until(singleton, combine)(combine(trees))
+  def until[C <: CodeTree](singleton: List[CodeTree] => Boolean, combine: List[CodeTree] => List[CodeTree])(trees: List[C]): List[CodeTree] =
+    if (singleton(trees))
+      trees
+    else
+      until(singleton, combine)(combine(trees))
 
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.

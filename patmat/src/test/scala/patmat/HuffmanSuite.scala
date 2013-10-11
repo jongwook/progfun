@@ -6,6 +6,8 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 import patmat.Huffman._
+import common._
+import scala.io.{Source, Codec}
 
 @RunWith(classOf[JUnitRunner])
 class HuffmanSuite extends FunSuite {
@@ -49,6 +51,9 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("creates code tree") {
+    val tree = createCodeTree("hello world I'm a test string".toList)
+  }
 
   test("decode and quickEncode a very short text should be identity") {
     new TestTrees {
@@ -57,5 +62,12 @@ class HuffmanSuite extends FunSuite {
       println(quickEncode(t1)("ab".toList))
       assert(decode(t1, quickEncode(t1)("ab".toList)) === "ab".toList)
     }
+  }
+
+  test("create code tree from very large text") {
+    val is = resourceAsStreamFromSrc(List("english.txt")).get
+    val text = Source.fromInputStream(is)(Codec.UTF8).mkString
+    val tree = createCodeTree(text.toList)
+    println(tree)
   }
 }
